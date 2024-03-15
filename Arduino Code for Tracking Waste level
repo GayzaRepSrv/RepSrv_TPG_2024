@@ -1,0 +1,56 @@
+*****This will be the Arduino Code for Tracking Waste level - we can update the numbers and threshold values later on as well. 
+
+
+// Include the NewPing library
+#include <NewPing.h>
+
+// Define pins for the Ultrasonic sensor
+#define trigPin 9
+#define echoPin 10
+
+// Initialize the NewPing sensor object
+NewPing sonar(trigPin, echoPin);
+
+// Define a threshold for waste level
+const int wasteThreshold = 2.25; // Adjust as needed
+
+void setup() {
+  // Initialize Serial communication
+  Serial.begin(9600);
+
+  // Initialize the Ultrasonic sensor pins
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+  // Additional initialization code for the Ultrasonic sensor, if needed
+  // For example, you might set the sensor's mode or other parameters here
+}
+
+void loop() {
+  // Measure the distance using the NewPing sensor in inches
+  int distance = sonar.ping_in();
+
+   // Print raw distance measurement for debugging
+  Serial.print("Distance (in): ");
+  Serial.println(distance);
+
+  // Convert distance to percentage of waste level
+  int wasteLevel = map(distance, 0, 2.5, 0, 100); // Map distance from 0 to 2.5 inches to waste level from 100% to 0%
+
+  // Print the waste level
+  Serial.print("Waste Level (%): ");
+  Serial.println(wasteLevel);
+
+  // Check if waste level exceeds threshold
+  if (wasteLevel > wasteThreshold) {
+    Serial.println("Trash can is full! Please empty it.");
+    // You can add actions here like activating a buzzer or sending a notification
+  }
+  else if (wasteLevel > 0.5) {
+    Serial.println("Almost there!"); // Display "almost there" message
+    // You can add additional actions here
+  }
+
+  // Delay for stability
+  delay(1000);
+}
